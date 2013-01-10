@@ -268,6 +268,12 @@ $(document).ready(function() {
 									var hidden = false;
 								}
 								FileList.addFile(uniqueName,size,date,true,hidden);
+								$('tr').filterAttr('data-file',files[i].name).find('.nametext').after('<div class=prog></div>');
+								$('tr').filterAttr('data-file',files[i].name).find('.prog').progressbar({value:0});
+								$('tr').filterAttr('data-file',files[i].name).find('.prog').css({ 'background': 'inherit', 'border': 'none', 'margin-left': '-0.3em', 'margin-top':'-0.3em', 'margin-bottom':'0' });
+								$('tr').filterAttr('data-file',files[i].name).find('.ui-widget-header').css({ 'background': '#eee', 'border': 'none' });
+								$('tr').filterAttr('data-file',files[i].name).find('.ui-progressbar').css({'height': '2.5em'});
+								$('tr').filterAttr('data-file',files[i].name).find('.prog').fadeIn();
 							} else if(dirName) {
 								var uploadtext = $('tr').filterAttr('data-type', 'dir').filterAttr('data-file', dirName).find('.uploadtext')
 								var currentUploads = parseInt(uploadtext.attr('currentUploads'));
@@ -371,6 +377,8 @@ $(document).ready(function() {
 											if(response[0] != undefined && response[0].status == 'success') {
 												var file=response[0];
 												delete uploadingFiles[file.name];
+												$('tr').filterAttr('data-file',file.name).find('.prog').progressbar('value',100);
+												$('tr').filterAttr('data-file',file.name).find('.prog').fadeOut();
 												$('tr').filterAttr('data-file',file.name).data('mime',file.mime).data('id',file.id);
 												var size = $('tr').filterAttr('data-file',file.name).find('td.filesize').text();
 												if(size==t('files','Pending')){
@@ -427,6 +435,9 @@ $(document).ready(function() {
 			},
 			progress: function(e, data) {
 				// TODO: show nice progress bar in file row
+				file = data.files[0]
+				var progress = (data.loaded/data.total)*100;
+				$('tr').filterAttr('data-file',file.name).find('.prog').progressbar('value',progress);
 			},
 			progressall: function(e, data) {
 				var progress = (data.loaded/data.total)*100;
